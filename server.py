@@ -12,8 +12,14 @@ PIN_ENPOINT = 4
 PIN_CLKJEU = 17 
 PIN_ENJEU = 27
 
+PIN_RAZPOINT = 22
+PIN_RAZJEU = 10
+
+PIN_CLKTM = 9
+PIN_SERVICE = 11
+
 TCP_IP = "0.0.0.0"
-TCP_PORT = 8001
+TCP_PORT = 8004
 BUFFER_SIZE = 4000
 
 TEAM_A = 0
@@ -49,6 +55,12 @@ def initgpio():
     GPIO.setup(PIN_TEAM, GPIO.OUT)
     GPIO.setup(PIN_CLKPOINT, GPIO.OUT)
     GPIO.setup(PIN_ENPOINT, GPIO.OUT)
+    GPIO.setup(PIN_CLKJEU, GPIO.OUT)
+    GPIO.setup(PIN_ENJEU, GPIO.OUT)
+    GPIO.setup(PIN_RAZPOINT, GPIO.OUT)
+    GPIO.setup(PIN_RAZJEU, GPIO.OUT)
+    GPIO.setup(PIN_CLKTM, GPIO.OUT)
+    GPIO.setup(PIN_SERVICE, GPIO.OUT)
     waitch()
 
 def chpoint(dirc, team):
@@ -60,9 +72,7 @@ def chpoint(dirc, team):
         GPIO.output(PIN_ENPOINT, GPIO.HIGH)
 
     selteam(team)
-    waitch()
     pulse(PIN_CLKPOINT)
-    waitch()
 
 def chjeu(dirc, team):
     if (dirc == COUNT_UP):
@@ -73,43 +83,65 @@ def chjeu(dirc, team):
         GPIO.output(PIN_ENJEU, GPIO.HIGH)
 
     selteam(team)
-    waitch()
     pulse(PIN_CLKJEU)
-    waitch()
 
 
 def clrpoint(team):
-    pass
+    selteam(team)
+    pulse(PIN_RAZPOINT)
 
 def clrjeu(team):
-    pass
+    selteam(team)
+    pulse(PIN_RAZJEU)
 
 def addtime(team):
-    pass
+    selteam(team)
+    pulse(PIN_CLKTM)
 
 def chsrvs():
-    pass
+    pulse(PIN_SERVICE)
 
 def gpioaction(data):
-    if (data == "1\n"):
+    if (data == "0\n"):
+        chsrvs()
+
+    elif (data == "1\n"):
         chpoint(COUNT_UP, TEAM_A)
     elif (data == "2\n"):
         chpoint(COUNT_DW, TEAM_A)
+    elif (data == "3\n"):
+        clrpoint(TEAM_A)
 
     elif (data == "4\n"):
         chjeu(COUNT_UP, TEAM_A)
     elif (data == "5\n"):
         chjeu(COUNT_DW, TEAM_A)
+    elif (data == "6\n"):
+        clrjeu(TEAM_A)
+
+    elif ((data == "7\n") or (data == "8\n") or (data == "9\n")):
+        addtime(TEAM_A)
+
+
+    elif (data == "10\n"):
+        chsrvs()
 
     elif (data == "11\n"):
         chpoint(COUNT_UP, TEAM_B)
     elif (data == "12\n"):
         chpoint(COUNT_DW, TEAM_B)
+    elif (data == "13\n"):
+        clrpoint(TEAM_B)
 
     elif (data == "14\n"):
         chjeu(COUNT_UP, TEAM_B)
     elif (data == "15\n"):
         chjeu(COUNT_DW, TEAM_B)
+    elif (data == "16\n"):
+        clrjeu(TEAM_B)
+
+    elif ((data == "17\n") or (data == "18\n") or (data == "19\n")):
+        addtime(TEAM_B)
 
     else:
         print("Not detected")
