@@ -8,13 +8,12 @@ source-directory /etc/network/interfaces.d
 
 iface eth0 inet static
 	address 10.65.11.172
-	netmask 255.255.255.0
+	netmask	255.255.255.0
 	gateway 10.65.11.254
-	#nameserver 10.193.4.1
 
 allow-hotplug wlan0
 iface wlan0 inet static
-	address 172.24.1.1
-	netmask 255.255.255.0
-	network 172.24.1.0
-	broadcast 172.24.1.255
+    address 172.24.1.1
+    netmask 255.255.255.0
+    network 172.24.1.10
+    broadcast 172.24.1.255
